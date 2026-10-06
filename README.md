@@ -33,7 +33,7 @@ Después de instalar, cierra sesión y elige **Hyprland** en SDDM. El tema guard
 | `johan-neon` | `johan-neon.png` | Cian eléctrico, magenta |
 | `liberty` | `liberty.jpg` | Blanco y negro, grises |
 
-Pulsa **Super+T** para abrir el selector. El tema sincroniza wallpaper, Waybar, Wofi, Ghostty, Kitty, Fastfetch, Cava, btop, prompt Zsh y bordes de Hyprland. NvChad lee el tema activo al iniciar y aplica los acentos Johan Neon o Liberty.
+Pulsa **Super+T** para abrir el selector. El tema sincroniza wallpaper, Waybar, Wofi, Ghostty, Kitty, Fastfetch, Cava, btop, prompt Zsh, NvChad y bordes de Hyprland.
 
 Fastfetch conserva su salida completa en todos los temas: logo, usuario, sistema, kernel, uptime, paquetes, shell, entorno gráfico, CPU, GPU, memoria, discos, red y colores.
 
@@ -85,6 +85,8 @@ AGENTS.md           Convenciones para mantener el repositorio
 ## Añadir un tema
 
 Sigue [docs/THEMES.md](docs/THEMES.md). En resumen: añade el wallpaper, crea los archivos de paleta por aplicación, añade una opción al selector y valida Fastfetch/Hyprland antes de publicar.
+
+Para auditar que los temas integrados, wallpapers, colores y atajos sigan completos, ejecuta `./scripts/audit-repo.sh`. Para guardar la apariencia de un Arch ya configurado como un tema seleccionable, usa `./scripts/capture-theme.sh mi-tema`; el flujo y sus límites están en [docs/THEMES.md](docs/THEMES.md).
 
 ## Recursos y atribuciones
 

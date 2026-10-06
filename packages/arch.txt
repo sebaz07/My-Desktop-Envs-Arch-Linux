@@ -38,6 +38,7 @@ qt6-declarative
 qt6-multimedia
 qt6-multimedia-ffmpeg
 qt6-svg
+ripgrep
 sddm
 slurp
 thunar

@@ -35,13 +35,73 @@ set_btop_theme() {
     sed -i "s|^theme_background = .*|theme_background = $show_theme_bg|" "$btop_config"
 }
 
+link_if_present() {
+    local source="$1" destination="$2"
+    [[ -s "$source" ]] || return 0
+    ln -sfn "$source" "$destination"
+}
+
+link_with_fallback() {
+    local source="$1" fallback="$2" destination="$3"
+    if [[ -s "$source" ]]; then
+        ln -sfn "$source" "$destination"
+    else
+        ln -sfn "$fallback" "$destination"
+    fi
+}
+
 if [[ "$choice" == --current ]]; then
     choice="$(cat "$config_dir/hypr/current-theme" 2>/dev/null || printf 'Dusk City (animado)')"
 fi
 if [[ -z "$choice" ]]; then
-    choice="$(printf 'Dusk City (animado)\nSkull (verde agua)\nArch Blue\nJohan Neon\nLiberty' | wofi --dmenu --prompt 'Tema')" || exit 0
+    custom_choices=""
+    while IFS= read -r custom_dir; do
+        [[ -d "$custom_dir" ]] || continue
+        custom_id="${custom_dir##*/}"
+        custom_name="$(sed -n 's/^name=//p' "$custom_dir/metadata" 2>/dev/null | head -n1)"
+        custom_name="${custom_name:-$custom_id}"
+        custom_choices+="${custom_choices:+$'\n'}custom:$custom_id — $custom_name"
+    done < <(find "$dotfiles/themes/custom" -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null | sort)
+    choice="$(printf 'Dusk City (animado)\nSkull (verde agua)\nArch Blue\nJohan Neon\nLiberty\n%s' "$custom_choices" | sed '/^$/d' | wofi --dmenu --prompt 'Tema')" || exit 0
 fi
 
+if [[ "$choice" == custom:* ]]; then
+    choice="${choice#custom:}"
+    choice="${choice%% — *}"
+fi
+custom_theme="$dotfiles/themes/custom/$choice"
+if [[ -d "$custom_theme" && -s "$custom_theme/theme.conf" \
+    && -s "$custom_theme/waybar.css" && -s "$custom_theme/wofi.css" \
+    && -s "$custom_theme/ghostty" ]] && compgen -G "$custom_theme/wallpaper.*" >/dev/null; then
+    wallpaper_file=""
+    for candidate in "$custom_theme"/wallpaper.*; do
+        [[ -f "$candidate" ]] && { wallpaper_file="$candidate"; break; }
+    done
+    if [[ -n "$wallpaper_file" ]]; then
+        pkill -x mpvpaper 2>/dev/null || true
+        if ! pgrep -x hyprpaper >/dev/null; then hyprpaper >/dev/null 2>&1 & sleep 0.8; fi
+        hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpaper_file"
+    fi
+    link_if_present "$custom_theme/waybar.css" "$config_dir/waybar/style.css"
+    link_if_present "$custom_theme/wofi.css" "$config_dir/wofi/style.css"
+    link_if_present "$custom_theme/ghostty" "$config_dir/ghostty/current-theme"
+    link_with_fallback "$custom_theme/kitty.conf" "$kitty_themes/liberty.conf" "$config_dir/kitty/current-theme.conf"
+    if [[ -s "$custom_theme/fastfetch.jsonc" ]] \
+        && grep -Eq '"modules"[[:space:]]*:' "$custom_theme/fastfetch.jsonc"; then
+        ln -sfn "$custom_theme/fastfetch.jsonc" "$config_dir/fastfetch/config.jsonc"
+    else
+        ln -sfn "$fastfetch_themes/liberty.jsonc" "$config_dir/fastfetch/config.jsonc"
+    fi
+    link_with_fallback "$custom_theme/cava.conf" "$cava_themes/liberty.conf" "$config_dir/cava/config"
+    link_with_fallback "$custom_theme/p10k.zsh" "$zsh_themes/liberty.p10k.zsh" "$HOME/.p10k.zsh"
+    link_if_present "$custom_theme/nvim-theme.lua" "$config_dir/hypr/nvim-theme.lua"
+    if [[ -s "$custom_theme/btop.theme" ]]; then
+        set_btop_theme "$custom_theme/btop.theme" false
+    else
+        set_btop_theme Default false
+    fi
+    border_colors="$(<"$custom_theme/theme.conf")"
+else
 case "$choice" in
     'Dusk City'|'Dusk City (animado)'|dusk|dusk-city)
         pkill -x hyprpaper 2>/dev/null || true
@@ -59,7 +119,7 @@ case "$choice" in
         ln -sfn "$fastfetch_themes/dusk-city.jsonc" "$config_dir/fastfetch/config.jsonc"
         ln -sfn "$cava_themes/dusk-city.conf" "$config_dir/cava/config"
         ln -sfn "$kitty_themes/dusk-city.conf" "$config_dir/kitty/current-theme.conf"
-        set_btop_theme /usr/share/btop/themes/adapta.theme true
+        set_btop_theme "$btop_themes/dusk-city.theme" true
         border_colors='rgba(89dcebff) rgba(f38ba8ff) 45deg'
         ;;
     Skull|skull|'Skull (dorado)'|'Skull (verde agua)'|skull-teal|amber)
@@ -76,7 +136,7 @@ case "$choice" in
         ln -sfn "$fastfetch_themes/skull-teal.jsonc" "$config_dir/fastfetch/config.jsonc"
         ln -sfn "$cava_themes/skull-teal.conf" "$config_dir/cava/config"
         ln -sfn "$kitty_themes/skull-teal.conf" "$config_dir/kitty/current-theme.conf"
-        set_btop_theme /usr/share/btop/themes/adapta.theme true
+        set_btop_theme "$btop_themes/skull-teal.theme" true
         border_colors='rgba(70d3b5ff) rgba(e8b870ff) 45deg'
         ;;
     'Arch Blue'|arch-blue)
@@ -93,7 +153,7 @@ case "$choice" in
         ln -sfn "$fastfetch_themes/arch-blue.jsonc" "$config_dir/fastfetch/config.jsonc"
         ln -sfn "$cava_themes/arch-blue.conf" "$config_dir/cava/config"
         ln -sfn "$kitty_themes/arch-blue.conf" "$config_dir/kitty/current-theme.conf"
-        set_btop_theme /usr/share/btop/themes/adapta.theme true
+        set_btop_theme "$btop_themes/arch-blue.theme" true
         border_colors='rgba(31b7ffff) rgba(9f9ce8ff) 45deg'
         ;;
     'Johan Neon'|johan-neon|johan)
@@ -135,6 +195,7 @@ case "$choice" in
         exit 2
         ;;
 esac
+fi
 
 printf 'general {\n    col.active_border = %s\n}\n' "$border_colors" > "$config_dir/hypr/theme.conf"
 hyprctl_session keyword general:col.active_border "$border_colors"
