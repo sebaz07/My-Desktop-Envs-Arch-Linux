@@ -1,0 +1,2 @@
+# Opcional: animación Dusk City como wallpaper de Hyprland.
+mpvpaper

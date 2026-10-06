@@ -1,0 +1,12 @@
+// Dusk City compact top bar
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "margin": "5px 8px 0px",
+    "spacing": 4,
+    "modules-left": ["custom/arch", "hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["pulseaudio", "network", "backlight", "tray"],
+    "include": ["~/.config/waybar/modules.json"]
+}
