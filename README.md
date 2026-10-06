@@ -56,6 +56,7 @@ Fastfetch conserva su salida completa en todos los temas: logo, usuario, sistema
 - `Super+W` o `Super+Q`: cerrar ventana.
 - `Super+Space`: lanzador Wofi.
 - `Super+T`: selector de tema.
+- `Super+O`: menú para ajustar la opacidad del fondo de Ghostty/Kitty y alternar el blur del escritorio detrás de los terminales.
 - `Super+E`: Thunar.
 - `Super+L`: lockscreen QuickShell/Qylock.
 - `Super+V`: flotante; `Super+F`: pantalla completa.

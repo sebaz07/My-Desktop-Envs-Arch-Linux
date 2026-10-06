@@ -183,6 +183,17 @@ mkdir -p "$BACKUP_ROOT" "$WALLPAPER_DIR" "$HOME/.config/hypr" "$HOME/.config/way
   "$HOME/.config/kitty" \
   "$HOME/.config/zsh" "$HOME/.local/share"
 
+if [[ ! -s "$HOME/.config/ghostty/background-opacity" ]]; then
+  printf 'background-opacity = 0.70\n' > "$HOME/.config/ghostty/background-opacity"
+fi
+if [[ ! -s "$HOME/.config/kitty/background-opacity.conf" ]]; then
+  printf 'background_opacity 1.0\n' > "$HOME/.config/kitty/background-opacity.conf"
+fi
+if [[ ! -s "$HOME/.config/hypr/terminal-blur.conf" ]]; then
+  printf '%s\n' 'windowrule = no_blur on, match:class ^(kitty|ghostty|com.mitchellh.ghostty)$' \
+    > "$HOME/.config/hypr/terminal-blur.conf"
+fi
+
 backup_existing() {
   local destination="$1" backup_path
   if [[ -e "$destination" || -L "$destination" ]]; then

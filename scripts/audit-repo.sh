@@ -64,6 +64,16 @@ rg -q '^config-file = ~/.config/ghostty/current-theme$' dotfiles/ghostty/config 
     || fail 'Ghostty debe cargar el tema con config-file y la ruta current-theme'
 rg -q '^bind = \$mainMod, T, exec, ~/.config/hypr/scripts/theme-switcher.sh$' dotfiles/hypr/hyprland.conf \
     || fail 'falta Super+T para el selector'
+rg -q '^bind = \$mainMod, O, exec, ~/.config/hypr/scripts/opacity-control.sh$' dotfiles/hypr/hyprland.conf \
+    || fail 'falta Super+O para controlar la opacidad del fondo de Ghostty'
+rg -q '^source = ~/.config/hypr/terminal-blur.conf$' dotfiles/hypr/hyprland.conf \
+    || fail 'Hyprland debe leer la preferencia persistente de blur para terminales'
+rg -q '^config-file = \?~/.config/ghostty/background-opacity$' dotfiles/ghostty/config \
+    || fail 'Ghostty debe leer el valor persistente de opacidad de fondo'
+rg -q '^background-opacity-cells = false$' dotfiles/ghostty/config \
+    || fail 'Ghostty debe limitar la opacidad al fondo, no a las celdas de texto'
+rg -q '^include ~/.config/kitty/background-opacity.conf$' dotfiles/kitty/kitty.conf \
+    || fail 'Kitty debe leer el valor persistente de opacidad de fondo'
 rg -q '^bind = \$mainMod, Q, killactive$' dotfiles/hypr/hyprland.conf \
     || fail 'falta Super+Q para cerrar ventanas'
 rg -q '^bind = SUPER, W, killactive$' dotfiles/hypr/hyprland.conf \
@@ -194,6 +204,9 @@ if (( live )); then
     grep -Eq '"modules"[[:space:]]*:' "$HOME/.config/fastfetch/config.jsonc" 2>/dev/null \
         || fail 'Fastfetch activo no tiene modules'
     [[ -s "$HOME/.config/hypr/theme.conf" ]] || fail 'falta el borde Hyprland activo'
+    [[ -s "$HOME/.config/ghostty/background-opacity" ]] || fail 'falta la opacidad persistente de Ghostty'
+    [[ -s "$HOME/.config/kitty/background-opacity.conf" ]] || fail 'falta la opacidad persistente de Kitty'
+    [[ -s "$HOME/.config/hypr/terminal-blur.conf" ]] || fail 'falta la preferencia de blur para terminales'
     [[ -s "$HOME/.config/btop/btop.conf" ]] || fail 'falta la config activa de btop'
     btop_theme="$(sed -n 's/^[[:space:]]*color_theme[[:space:]]*=[[:space:]]*"\{0,1\}\([^"#]*\)"\{0,1\}.*/\1/p' "$HOME/.config/btop/btop.conf" | head -n1)"
     if [[ "$btop_theme" != Default && ! -s "$btop_theme" ]]; then

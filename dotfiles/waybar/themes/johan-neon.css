@@ -6,9 +6,10 @@
 
 window#waybar {
     color: #d9eaff;
-    background: rgba(5, 9, 20, 0.72);
-    border: 1px solid rgba(0, 217, 255, 0.72);
-    border-radius: 7px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .modules-left, .modules-center, .modules-right {
@@ -22,9 +23,9 @@ window#waybar {
     color: #9db6d3; background: transparent; border: none; border-radius: 5px;
     padding: 0 7px; margin: 3px 2px;
 }
-#workspaces button.active { color: #080b16; background: #f02bd4; }
+#workspaces button.active { color: #f02bd4; background: transparent; border: none; border-bottom: 2px solid #f02bd4; border-radius: 0; box-shadow: none; }
 #workspaces button.empty { color: #58677f; }
-#workspaces button.urgent { color: #080b16; background: #00d9ff; }
+#workspaces button.urgent { color: #00d9ff; background: transparent; border: none; box-shadow: none; }
 #clock { color: #e9eaff; font-weight: bold; }
 #network, #pulseaudio, #backlight, #mpris, #tray { color: #d9eaff; padding: 0 8px; }
 #network.disconnected, #pulseaudio.muted { color: #f02bd4; }
@@ -32,3 +33,4 @@ window#waybar {
     color: #d9eaff; background: rgba(8, 11, 22, 0.96);
     border: 1px solid #00d9ff; border-radius: 7px;
 }
+#workspaces button:hover { background: transparent; box-shadow: none; }

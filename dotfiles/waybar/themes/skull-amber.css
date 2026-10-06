@@ -6,9 +6,10 @@
 
 window#waybar {
     color: #c3e8db;
-    background: rgba(12, 14, 22, 0.56);
-    border: 1px solid rgba(112, 211, 181, 0.42);
-    border-radius: 7px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .modules-left,
@@ -35,8 +36,12 @@ window#waybar {
 }
 
 #workspaces button.active {
-    color: #1e1e2e;
-    background: #65c7a6;
+    color: #65c7a6;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #65c7a6;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 #workspaces button.empty {
@@ -44,8 +49,10 @@ window#waybar {
 }
 
 #workspaces button.urgent {
-    color: #1e1e2e;
-    background: #e8b870;
+    color: #e8b870;
+    background: transparent;
+    border: none;
+    box-shadow: none;
 }
 
 #clock {
@@ -72,4 +79,9 @@ window#waybar {
     background: rgba(17, 17, 27, 0.96);
     border: 1px solid #70d3b5;
     border-radius: 7px;
+}
+
+#workspaces button:hover {
+    background: transparent;
+    box-shadow: none;
 }
