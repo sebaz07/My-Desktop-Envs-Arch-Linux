@@ -1,0 +1,10 @@
+config-file = ~/.config/ghostty/current-theme
+font-family = JetBrainsMono Nerd Font
+font-size = 11
+cursor-opacity = 0.9
+background-opacity = 0.70
+background-opacity-cells = true
+background-blur = false
+window-padding-x = 10
+window-padding-y = 8
+keybind = shift+enter=text:\n

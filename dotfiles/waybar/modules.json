@@ -1,0 +1,44 @@
+{
+  "custom/arch": {
+    "format": "",
+    "tooltip": false
+  },
+  "hyprland/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "warp-on-scroll": false,
+    "format": "{name}",
+    "persistent-workspaces": {"*": [1, 2, 3, 4, 5]}
+  },
+  "clock": {
+    "format": "  {:%a, %d %b  %H:%M}",
+    "tooltip-format": "<big>{:%A, %d %B %Y}</big>\n<tt><small>{calendar}</small></tt>"
+  },
+  "network": {
+    "format-wifi": "  {signalStrength}%",
+    "format-ethernet": "󰈀  {ipaddr}",
+    "format-disconnected": "󰖪  Sin red",
+    "tooltip-format": "{ifname}: {ipaddr} vía {gwaddr}",
+    "on-click": "nm-connection-editor"
+  },
+  "pulseaudio": {
+    "format": "{icon}  {volume}%",
+    "format-muted": "󰝟  Silencio",
+    "format-icons": {"default": ["󰕿", "󰖀", "󰕾"]},
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+  },
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": ["󰃞", "󰃟", "󰃠"]
+  },
+  "mpris": {
+    "format": "󰐊  {title}",
+    "format-paused": "󰏤  {title}",
+    "format-stopped": "",
+    "max-length": 28,
+    "tooltip-format": "{player}: {artist} — {title}",
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl next"
+  }
+}
