@@ -202,6 +202,9 @@ hyprctl_session keyword general:col.active_border "$border_colors"
 if ghostty_pid="$(pgrep -xo ghostty)"; then
     kill -USR2 "$ghostty_pid" 2>/dev/null || true
 fi
+if kitty_pid="$(pgrep -xo kitty)"; then
+    kill -USR1 "$kitty_pid" 2>/dev/null || true
+fi
 
 pkill -x waybar 2>/dev/null || true
 sleep 0.2
