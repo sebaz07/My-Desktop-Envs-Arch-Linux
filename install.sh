@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
 
 REPO_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 DOTFILES="$REPO_ROOT/dotfiles"
@@ -9,6 +9,20 @@ THEME="liberty"
 ENABLE_SDDM=0
 SET_DEFAULT_SHELL=0
 INSTALL_PACKAGES=1
+VSCODE_THEME=0
+FORCE_MENU=0
+NO_MENU=0
+INITIAL_ARGS=$#
+
+C_RESET=$'\033[0m'
+C_BOLD=$'\033[1m'
+C_DIM=$'\033[2m'
+C_CYAN=$'\033[38;5;51m'
+C_BLUE=$'\033[38;5;39m'
+C_MAGENTA=$'\033[38;5;213m'
+C_GREEN=$'\033[38;5;82m'
+C_YELLOW=$'\033[38;5;220m'
+C_RED=$'\033[38;5;203m'
 
 usage() {
   cat <<USAGE
@@ -18,7 +32,10 @@ Uso: ./install.sh [opciones]
                          skull-teal o dusk-city (o tema capturado; default: liberty)
   --enable-sddm          Instala el tema Pixel Dusk City y habilita SDDM
   --set-default-shell    Establece Zsh como shell de inicio de sesión
+  --vscode-theme        Sincroniza VS Code con el tema del escritorio
   --no-packages          No instala paquetes con pacman
+  --menu                 Abre el menú interactivo antes de instalar
+  --no-menu              No abre el menú automáticamente
   -h, --help             Muestra esta ayuda
 USAGE
 }
@@ -28,12 +45,94 @@ while (($#)); do
     --theme) THEME="${2:?Falta el identificador del tema}"; shift 2 ;;
     --enable-sddm) ENABLE_SDDM=1; shift ;;
     --set-default-shell) SET_DEFAULT_SHELL=1; shift ;;
+    --vscode-theme) VSCODE_THEME=1; shift ;;
     --no-packages) INSTALL_PACKAGES=0; shift ;;
+    --menu) FORCE_MENU=1; shift ;;
+    --no-menu) NO_MENU=1; shift ;;
     -h|--help) usage; exit 0 ;;
     *) printf 'Opción desconocida: %s\n' "$1" >&2; usage >&2; exit 2 ;;
   esac
 done
 
+show_banner() {
+  printf '%s' "$C_CYAN"
+  cat <<'BANNER'
+  ███████╗███████╗██████╗  █████╗ ███████╗
+  ██╔════╝██╔════╝██╔══██╗██╔══██╗╚══███╔╝
+  ███████╗█████╗  ██████╔╝███████║  ███╔╝
+  ╚════██║██╔══╝  ██╔══██╗██╔══██║ ███╔╝
+  ███████║███████╗██████╔╝██║  ██║███████╗
+  ╚══════╝╚══════╝╚═════╝ ╚═╝  ╚═╝╚══════╝
+
+       ▄▀█ █▀█ █▀▀ █ █   █   █ █▄ █ █ █ ▀█▀
+       █▀█ █▀▄ ██▄ █ █▄▄ █▄▄ █ █ ▀█ █▄█  █
+BANNER
+  printf '%s%s%s\n' "$C_MAGENTA" '       ARCH LINUX  •  DESKTOP ENVIRONMENT' "$C_RESET"
+}
+
+interactive_menu() {
+  local answer choice index theme_list=()
+  while IFS= read -r theme_id; do theme_list+=("$theme_id"); done < <(
+    printf '%s\n' liberty johan-neon arch-blue skull-teal dusk-city
+    if [[ -d "$DOTFILES/themes/custom" ]]; then
+      find "$DOTFILES/themes/custom" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort
+    fi
+  )
+  while :; do
+    [[ -t 1 ]] && clear 2>/dev/null || true
+    show_banner
+    printf '\n%s%sConfiguración de instalación%s\n\n' "$C_BOLD" "$C_BLUE" "$C_RESET"
+    printf '  Tema:              %s%s%s\n' "$C_CYAN" "$THEME" "$C_RESET"
+    printf '  Paquetes pacman:   %s\n' "$([[ $INSTALL_PACKAGES == 1 ]] && printf 'Sí' || printf 'No')"
+    printf '  Activar SDDM:      %s\n' "$([[ $ENABLE_SDDM == 1 ]] && printf 'Sí' || printf 'No')"
+    printf '  Shell Zsh default: %s\n' "$([[ $SET_DEFAULT_SHELL == 1 ]] && printf 'Sí' || printf 'No')"
+    printf '  Tema VS Code:      %s\n\n' "$([[ $VSCODE_THEME == 1 ]] && printf 'Sí' || printf 'No')"
+    printf '%s  1%s  Elegir tema\n  2  Alternar instalación de paquetes\n  3  Alternar SDDM\n  4  Alternar Zsh como shell predeterminado\n  5  Alternar sincronización de VS Code\n' "$C_BOLD" "$C_RESET"
+    printf '  %s6%s  %sEmpezar instalación%s\n  7  Salir\n\n' "$C_GREEN" "$C_RESET" "$C_BOLD" "$C_RESET"
+    read -r -p '  Selección [1-7]: ' answer || exit 130
+    case "$answer" in
+      1)
+        printf '\n%sTemas disponibles:%s\n' "$C_BOLD" "$C_RESET"
+        for index in "${!theme_list[@]}"; do printf '  %d) %s\n' "$((index + 1))" "${theme_list[$index]}"; done
+        read -r -p '  Número de tema (Enter conserva el actual): ' choice || exit 130
+        if [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#theme_list[@]} )); then
+          THEME="${theme_list[$((choice - 1))]}"
+        else
+          printf '%sTema sin cambios.%s\n' "$C_DIM" "$C_RESET"
+          sleep 1
+        fi
+        ;;
+      2) INSTALL_PACKAGES=$((1 - INSTALL_PACKAGES)) ;;
+      3) ENABLE_SDDM=$((1 - ENABLE_SDDM)) ;;
+      4) SET_DEFAULT_SHELL=$((1 - SET_DEFAULT_SHELL)) ;;
+      5) VSCODE_THEME=$((1 - VSCODE_THEME)) ;;
+      6) break ;;
+      7) printf '\nInstalación cancelada.\n'; exit 0 ;;
+      *) printf '%sOpción inválida.%s\n' "$C_RED" "$C_RESET"; sleep 1 ;;
+    esac
+  done
+}
+
+if (( NO_MENU == 0 )) && { (( FORCE_MENU )) || { (( INITIAL_ARGS == 0 )) && [[ -t 0 ]]; }; }; then
+  interactive_menu
+fi
+
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/my-desktop-envs/logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/install-$(date +%Y%m%d-%H%M%S)-$$.log"
+exec > >(tee -a "$LOG_FILE") 2>&1
+CURRENT_PHASE='inicialización'
+trap 'status=$?; printf "\\n%s[ERROR]%s Falló la fase: %s\\n  Línea: %s\\n  Comando: %s\\n  Código: %s\\n  Log completo: %s\\n" "$C_RED" "$C_RESET" "$CURRENT_PHASE" "$LINENO" "$BASH_COMMAND" "$status" "$LOG_FILE" >&2; exit "$status"' ERR
+
+phase() {
+  CURRENT_PHASE="$1"
+  printf '\n%s╭─ %s%s\n' "$C_BLUE" "$CURRENT_PHASE" "$C_RESET"
+}
+
+show_banner
+printf '\n%sLog de esta instalación:%s %s\n' "$C_DIM" "$C_RESET" "$LOG_FILE"
+
+phase 'Validando opciones y sistema'
 CUSTOM_THEME="$DOTFILES/themes/custom/$THEME"
 case "$THEME" in
   liberty|johan-neon|arch-blue|skull-teal|dusk-city) CUSTOM_THEME="" ;;
@@ -52,12 +151,32 @@ if [[ "$EUID" -eq 0 ]]; then
   exit 1
 fi
 
+if (( VSCODE_THEME )); then
+  phase 'Validando VS Code y Python'
+  command -v code >/dev/null 2>&1 || command -v code-oss >/dev/null 2>&1 \
+    || command -v codium >/dev/null 2>&1 || {
+      echo 'No encuentro VS Code, Code OSS ni VSCodium. Instálalo y vuelve a ejecutar --vscode-theme.' >&2
+      exit 1
+    }
+  if ! command -v python3 >/dev/null 2>&1; then
+    if (( INSTALL_PACKAGES )); then
+      need_python=1
+    else
+      echo 'La opción --vscode-theme requiere python3.' >&2
+      exit 1
+    fi
+  fi
+fi
+
 if (( INSTALL_PACKAGES )); then
+  phase 'Instalando paquetes oficiales con pacman'
   command -v pacman >/dev/null || { echo 'Este instalador requiere Arch Linux/pacman.' >&2; exit 1; }
   mapfile -t packages < <(sed -e '/^[[:space:]]*#/d' -e '/^[[:space:]]*$/d' "$REPO_ROOT/packages/arch.txt")
+  if (( VSCODE_THEME )) && [[ "${need_python:-0}" == 1 ]]; then packages+=(python); fi
   sudo pacman -S --needed --noconfirm "${packages[@]}"
 fi
 
+phase 'Preparando directorios y respaldos'
 mkdir -p "$BACKUP_ROOT" "$WALLPAPER_DIR" "$HOME/.config/hypr" "$HOME/.config/waybar" \
   "$HOME/.config/wofi" "$HOME/.config/ghostty" "$HOME/.config/fastfetch" \
   "$HOME/.config/btop" "$HOME/.config/btop/themes" "$HOME/.config/cava" \
@@ -93,6 +212,7 @@ install_copy() {
 }
 
 # Keep each built-in wallpaper in the normal user wallpaper directory.
+phase 'Instalando wallpapers y preparando el tema'
 install -m 0644 "$REPO_ROOT/assets/wallpapers/"* "$WALLPAPER_DIR/"
 
 if [[ -n "$CUSTOM_THEME" ]]; then
@@ -106,6 +226,7 @@ if [[ -n "$CUSTOM_THEME" ]]; then
 fi
 
 # Hyprland, its single-instance theme switcher, bar, launcher and terminal.
+phase 'Enlazando configuraciones del escritorio'
 for file in hyprland.conf hypridle.conf hyprpaper.conf hyprlock.conf; do
   link_config "$DOTFILES/hypr/$file" "$HOME/.config/hypr/$file"
 done
@@ -175,6 +296,7 @@ link_config "$DOTFILES/zsh/.zshrc" "$HOME/.zshrc"
 link_config "$DOTFILES/zsh/.zshenv" "$HOME/.zshenv"
 
 # Theme-specific terminal colors and Hyprland border survive a reboot.
+phase 'Guardando colores activos de Hyprland y terminales'
 if [[ -n "$CUSTOM_THEME" ]]; then
   border="$(<"$CUSTOM_THEME/theme.conf")"
 else
@@ -190,6 +312,7 @@ printf '%s\n' "$THEME" > "$HOME/.config/hypr/current-theme"
 printf 'general {\n    col.active_border = %s\n}\n' "$border" > "$HOME/.config/hypr/theme.conf"
 
 # Oh My Zsh, the Kushal prompt config, Powerlevel10k and autosuggestions.
+phase 'Instalando Oh My Zsh, plugins y temas de prompt'
 if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
   git clone --depth 1 https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
 fi
@@ -212,6 +335,7 @@ if [[ ! -d "$HOME/.local/share/oh-my-zsh-Kushal-Theme" ]]; then
 fi
 
 # Install Qylock's QuickShell lockscreen assets and the included SDDM theme.
+phase 'Preparando lockscreen y SDDM'
 install_copy "$REPO_ROOT/assets/quickshell-lockscreen" "$HOME/.local/share/quickshell-lockscreen"
 ln -sfn "$HOME/qylock/themes" "$HOME/.local/share/quickshell-lockscreen/themes_link"
 if (( ENABLE_SDDM )); then
@@ -224,10 +348,14 @@ SDDM
   sudo systemctl enable sddm.service
 fi
 
-systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service 2>/dev/null || true
-sudo systemctl enable --now NetworkManager.service 2>/dev/null || true
+phase 'Activando servicios de usuario y red'
+systemctl --user enable --now pipewire.socket pipewire-pulse.socket wireplumber.service 2>/dev/null \
+  || printf '%sAviso:%s no pude activar los servicios de audio del usuario.\n' "$C_YELLOW" "$C_RESET"
+sudo systemctl enable --now NetworkManager.service 2>/dev/null \
+  || printf '%sAviso:%s no pude activar NetworkManager.\n' "$C_YELLOW" "$C_RESET"
 
 if (( SET_DEFAULT_SHELL )); then
+  phase 'Configurando Zsh como shell de inicio de sesión'
   zsh_path="$(command -v zsh || true)"
   if [[ -z "$zsh_path" ]]; then
     echo 'Zsh no está instalado. Instala packages/arch.txt y vuelve a ejecutar --set-default-shell.' >&2
@@ -246,7 +374,14 @@ if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
   hyprctl dispatch exec "$HOME/.config/hypr/scripts/theme-switcher.sh $THEME"
 fi
 
+if (( VSCODE_THEME )); then
+  phase 'Aplicando la paleta de VS Code'
+  touch "$HOME/.config/hypr/vscode-theme-enabled"
+  python3 "$REPO_ROOT/scripts/set-vscode-theme.py" "$THEME"
+fi
+
 printf '\nInstalación lista. Tema inicial: %s\nRespaldo de configuraciones previas: %s\n' "$THEME" "$BACKUP_ROOT"
+printf 'Log completo: %s\n' "$LOG_FILE"
 if (( ENABLE_SDDM == 0 )); then
   echo 'Para activar SDDM, vuelve a ejecutar: ./install.sh --no-packages --theme '"$THEME"' --enable-sddm'
 fi

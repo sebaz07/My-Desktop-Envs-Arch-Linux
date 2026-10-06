@@ -207,3 +207,17 @@ pkill -x waybar 2>/dev/null || true
 sleep 0.2
 hyprctl_session dispatch exec waybar >/dev/null
 printf '%s\n' "$choice" > "$config_dir/hypr/current-theme"
+
+if [[ -e "$config_dir/hypr/vscode-theme-enabled" ]] && command -v python3 >/dev/null 2>&1; then
+    vscode_theme="$choice"
+    case "$choice" in
+        'Dusk City'|'Dusk City (animado)'|dusk) vscode_theme=dusk-city ;;
+        Skull|skull|'Skull (dorado)'|'Skull (verde agua)'|amber) vscode_theme=skull-teal ;;
+        'Arch Blue') vscode_theme=arch-blue ;;
+        'Johan Neon'|johan) vscode_theme=johan-neon ;;
+        Liberty|Liberty-Monochrome) vscode_theme=liberty ;;
+    esac
+    if ! python3 "$repo_root/scripts/set-vscode-theme.py" "$vscode_theme"; then
+        echo 'Aviso: no se pudo sincronizar el tema de VS Code.' >&2
+    fi
+fi

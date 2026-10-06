@@ -50,11 +50,13 @@ for theme in "${themes[@]}"; do
     need_file "dotfiles/cava/themes/$theme.conf"
     need_file "dotfiles/btop/themes/$theme.theme"
     need_file "dotfiles/zsh/themes/${prompt[$theme]}"
+    need_file "dotfiles/vscode/themes/$theme.json"
     rg -q '"modules"[[:space:]]*:' "dotfiles/fastfetch/themes/$theme.jsonc" \
         || fail "Fastfetch no define modules para $theme"
     rg -Fq "$theme" dotfiles/nvim/lua/chadrc.lua \
         || fail "NvChad no define una paleta para $theme"
 done
+need_file scripts/set-vscode-theme.py
 rg -q 'nvim-theme\.lua' dotfiles/nvim/lua/chadrc.lua \
     || fail 'NvChad no carga la paleta de temas capturados'
 
@@ -108,7 +110,7 @@ rg -q '^mpvpaper$' packages/aur.txt || fail 'mpvpaper debe documentarse como paq
 custom_root=dotfiles/themes/custom
 if [[ -d "$custom_root" ]]; then
     while IFS= read -r -d '' dir; do
-        for required in theme.conf waybar.css wofi.css ghostty; do
+        for required in theme.conf waybar.css wofi.css ghostty vscode-colors.json; do
             need_file "$dir/$required"
         done
         compgen -G "$dir/wallpaper.*" >/dev/null || fail "falta wallpaper para $dir"

@@ -158,6 +158,24 @@ secondary="${secondary:-#cba6f7}"
 muted="${muted:-#818ba9}"
 green="${green:-#a6e3a1}"
 surface="$(ghostty_hex selection-background 252b40)"
+red="$(sed -n 's/^palette = 1=#\{0,1\}\([[:xdigit:]]\{6\}\).*$/#\1/p' "$tmp/ghostty" | head -n1)"
+yellow="$(sed -n 's/^palette = 3=#\{0,1\}\([[:xdigit:]]\{6\}\).*$/#\1/p' "$tmp/ghostty" | head -n1)"
+blue="$(sed -n 's/^palette = 4=#\{0,1\}\([[:xdigit:]]\{6\}\).*$/#\1/p' "$tmp/ghostty" | head -n1)"
+magenta="$(sed -n 's/^palette = 5=#\{0,1\}\([[:xdigit:]]\{6\}\).*$/#\1/p' "$tmp/ghostty" | head -n1)"
+cyan="$(sed -n 's/^palette = 6=#\{0,1\}\([[:xdigit:]]\{6\}\).*$/#\1/p' "$tmp/ghostty" | head -n1)"
+type_color="$(sed -n 's/^palette = 14=#\{0,1\}\([[:xdigit:]]\{6\}\).*$/#\1/p' "$tmp/ghostty" | head -n1)"
+red="${red:-#f38ba8}"; yellow="${yellow:-#f9e2af}"; blue="${blue:-$primary}"
+magenta="${magenta:-$secondary}"; cyan="${cyan:-#94e2d5}"; type_color="${type_color:-$primary}"
+cat > "$tmp/vscode-colors.json" <<JSON
+{
+  "background": "$bg", "foreground": "$fg", "surface": "$surface",
+  "primary": "$primary", "secondary": "$secondary", "muted": "$muted",
+  "string": "$green", "type": "$type_color", "visual": "$surface",
+  "red": "$red", "green": "$green", "yellow": "$yellow", "blue": "$blue",
+  "magenta": "$magenta", "cyan": "$cyan"
+}
+JSON
+printf 'captured vscode-colors.json from Ghostty palette\n' >> "$tmp/captured.txt"
 cat > "$tmp/nvim-theme.lua" <<LUA
 return {
   Normal = { fg = "$fg", bg = "none" },

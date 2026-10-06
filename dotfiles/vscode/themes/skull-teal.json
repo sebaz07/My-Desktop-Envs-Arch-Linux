@@ -1,0 +1,7 @@
+{
+  "background": "#0a1517", "foreground": "#e2efeb", "surface": "#17312e",
+  "primary": "#70d3b5", "secondary": "#e8b870", "muted": "#809b92",
+  "string": "#a9d79c", "type": "#70d3b5", "visual": "#27473d",
+  "red": "#e88279", "green": "#70d3b5", "yellow": "#e8b870",
+  "blue": "#78b8d0", "magenta": "#bb9bd0", "cyan": "#70d3b5"
+}

@@ -12,6 +12,14 @@ cd My-Desktop-Envs-Arch-Linux
 ./install.sh --theme liberty --enable-sddm --set-default-shell
 ```
 
+Al ejecutarlo sin argumentos desde una terminal, aparece el menú interactivo `SEBAZ ARCH LINUX`. Ahí puedes seleccionar tema y alternar paquetes, SDDM, shell Zsh y sincronización de VS Code. Usa `./install.sh --menu` para abrirlo explícitamente; los argumentos existentes siguen funcionando sin menú.
+
+Para sincronizar también los colores de VS Code (opcional):
+
+```bash
+./install.sh --theme liberty --vscode-theme
+```
+
 El instalador instala paquetes oficiales de Arch, respalda configuraciones existentes en `~/.local/state/my-desktop-envs/backups/`, enlaza los dotfiles, instala Oh My Zsh/plugins, instala los wallpapers, prepara el lockscreen Qylock y configura el tema SDDM Pixel Dusk City. SDDM se habilita solo si indicas `--enable-sddm`; activar un display manager puede reemplazar el inicio gráfico actual.
 
 Opciones:
@@ -19,7 +27,10 @@ Opciones:
 - `--theme liberty|johan-neon|arch-blue|skull-teal|dusk-city`: tema inicial (por defecto `liberty`).
 - `--enable-sddm`: instala el tema SDDM incluido y habilita el servicio.
 - `--set-default-shell`: hace Zsh el shell de inicio de sesión.
+- `--vscode-theme`: activa y aplica en VS Code los colores del tema elegido; `Super+T` los sincroniza después.
 - `--no-packages`: omite `pacman`, para reutilizar una instalación existente.
+- `--menu`: abre el menú interactivo antes de instalar; sin argumentos se abre automáticamente en una terminal.
+- `--no-menu`: omite el menú automático.
 
 Después de instalar, cierra sesión y elige **Hyprland** en SDDM. El tema guardado se vuelve a aplicar al entrar.
 
@@ -33,7 +44,7 @@ Después de instalar, cierra sesión y elige **Hyprland** en SDDM. El tema guard
 | `johan-neon` | `johan-neon.png` | Cian eléctrico, magenta |
 | `liberty` | `liberty.jpg` | Blanco y negro, grises |
 
-Pulsa **Super+T** para abrir el selector. El tema sincroniza wallpaper, Waybar, Wofi, Ghostty, Kitty, Fastfetch, Cava, btop, prompt Zsh, NvChad y bordes de Hyprland.
+Pulsa **Super+T** para abrir el selector. El tema sincroniza wallpaper, Waybar, Wofi, Ghostty, Kitty, Fastfetch, Cava, btop, prompt Zsh, NvChad y bordes de Hyprland. VS Code se sincroniza si se activó con `--vscode-theme`; no requiere una extensión de Marketplace y conserva el tema/extensiones instalados, aplicando colores de interfaz y sintaxis en vivo.
 
 Fastfetch conserva su salida completa en todos los temas: logo, usuario, sistema, kernel, uptime, paquetes, shell, entorno gráfico, CPU, GPU, memoria, discos, red y colores.
 
@@ -107,3 +118,5 @@ También puedes inspeccionar primero los cambios de configuración y respaldos. 
 ## Diagnóstico rápido
 
 Para errores de Ghostty, Zsh/Oh My Zsh, el selector `Super+T` o una publicación GitHub detenida, consulta [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md). Incluye los síntomas observados y comandos para verificar y reparar rutas, shell y autenticación.
+
+Cada ejecución guarda la salida completa en `~/.local/state/my-desktop-envs/logs/`. Si falla una fase, el instalador muestra el comando, la línea y la ruta del log.
