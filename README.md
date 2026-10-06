@@ -101,3 +101,7 @@ git pull
 ```
 
 También puedes inspeccionar primero los cambios de configuración y respaldos. El instalador no borra tus copias anteriores.
+
+## Diagnóstico rápido
+
+Para errores de Ghostty, Zsh/Oh My Zsh, el selector `Super+T` o una publicación GitHub detenida, consulta [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md). Incluye los síntomas observados y comandos para verificar y reparar rutas, shell y autenticación.
