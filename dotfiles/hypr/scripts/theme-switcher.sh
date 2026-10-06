@@ -2,7 +2,8 @@
 set -euo pipefail
 
 config_dir="$HOME/.config"
-repo_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)"
+script_path="$(readlink -f -- "${BASH_SOURCE[0]}")"
+repo_root="$(cd -- "$(dirname -- "$script_path")/../../.." && pwd)"
 dotfiles="$repo_root/dotfiles"
 wallpapers="$HOME/.local/share/wallpapers"
 waybar_themes="$dotfiles/waybar/themes"
