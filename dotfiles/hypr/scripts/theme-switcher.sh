@@ -28,6 +28,19 @@ hyprctl_session() {
 monitor_name="$(hyprctl_session monitors | sed -n 's/^Monitor \([^ ]*\).*/\1/p' | head -n1)"
 border_colors='rgba(31b7ffff) rgba(9f9ce8ff) 45deg'
 
+set_wallpaper_all() {
+    local image="$1"
+    local monitor
+
+    while IFS= read -r monitor; do
+        [[ -n "$monitor" ]] || continue
+        hyprctl_session hyprpaper wallpaper "$monitor,$image"
+    done < <(
+        hyprctl_session monitors |
+        sed -n 's/^Monitor \([^ ]*\).*/\1/p'
+    )
+}
+
 set_btop_theme() {
     local theme_path="$1" show_theme_bg="$2" btop_config="$HOME/.config/btop/btop.conf"
     [[ -f "$btop_config" ]] || return 0
@@ -80,7 +93,7 @@ if [[ -d "$custom_theme" && -s "$custom_theme/theme.conf" \
     if [[ -n "$wallpaper_file" ]]; then
         pkill -x mpvpaper 2>/dev/null || true
         if ! pgrep -x hyprpaper >/dev/null; then hyprpaper >/dev/null 2>&1 & sleep 0.8; fi
-        hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpaper_file"
+        set_wallpaper_all "$wallpaper_file"
     fi
     link_if_present "$custom_theme/waybar.css" "$config_dir/waybar/style.css"
     link_if_present "$custom_theme/wofi.css" "$config_dir/wofi/style.css"
@@ -110,7 +123,7 @@ case "$choice" in
             mpvpaper -p -o 'no-audio loop-file=inf' ALL "$video" >/dev/null 2>&1 &
         else
             if ! pgrep -x hyprpaper >/dev/null; then hyprpaper >/dev/null 2>&1 & sleep 0.8; fi
-            hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpapers/pixel-dusk-city.png"
+            set_wallpaper_all "$wallpapers/pixel-dusk-city.png"
         fi
         ln -sfn "$waybar_themes/dusk-city.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/dusk-city.css" "$config_dir/wofi/style.css"
@@ -128,7 +141,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpapers/skull.png"
+        set_wallpaper_all "$wallpapers/skull.png"
         ln -sfn "$waybar_themes/skull-amber.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/skull-teal.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/skull-teal" "$config_dir/ghostty/current-theme"
@@ -145,7 +158,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpapers/arch-blue.png"
+        set_wallpaper_all "$wallpapers/arch-blue.png"
         ln -sfn "$waybar_themes/arch-blue.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/arch-blue.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/arch-blue" "$config_dir/ghostty/current-theme"
@@ -162,7 +175,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpapers/johan-neon.png"
+        set_wallpaper_all "$wallpapers/johan-neon.png"
         ln -sfn "$waybar_themes/johan-neon.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/johan-neon.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/johan-neon" "$config_dir/ghostty/current-theme"
@@ -179,7 +192,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        hyprctl_session hyprpaper wallpaper "$monitor_name,$wallpapers/liberty.jpg"
+        set_wallpaper_all "$wallpapers/liberty.jpg"
         ln -sfn "$waybar_themes/liberty.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/liberty.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/liberty" "$config_dir/ghostty/current-theme"
