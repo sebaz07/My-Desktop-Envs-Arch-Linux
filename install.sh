@@ -29,7 +29,8 @@ usage() {
 Uso: ./install.sh [opciones]
 
   --theme ID             Tema inicial: liberty, johan-neon, arch-blue,
-                         skull-teal o dusk-city (o tema capturado; default: liberty)
+                         skull-teal, dusk-city, neon-void o amber-shibuya
+                         (o tema capturado; default: liberty)
   --enable-sddm          Instala el tema Pixel Dusk City y habilita SDDM
   --set-default-shell    Establece Zsh como shell de inicio de sesión
   --vscode-theme        Sincroniza VS Code con el tema del escritorio
@@ -73,7 +74,7 @@ BANNER
 interactive_menu() {
   local answer choice index theme_list=()
   while IFS= read -r theme_id; do theme_list+=("$theme_id"); done < <(
-    printf '%s\n' liberty johan-neon arch-blue skull-teal dusk-city
+    printf '%s\n' liberty johan-neon arch-blue skull-teal dusk-city neon-void amber-shibuya
     if [[ -d "$DOTFILES/themes/custom" ]]; then
       find "$DOTFILES/themes/custom" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort
     fi
@@ -135,7 +136,7 @@ printf '\n%sLog de esta instalación:%s %s\n' "$C_DIM" "$C_RESET" "$LOG_FILE"
 phase 'Validando opciones y sistema'
 CUSTOM_THEME="$DOTFILES/themes/custom/$THEME"
 case "$THEME" in
-  liberty|johan-neon|arch-blue|skull-teal|dusk-city) CUSTOM_THEME="" ;;
+  liberty|johan-neon|arch-blue|skull-teal|dusk-city|neon-void|amber-shibuya) CUSTOM_THEME="" ;;
   *)
     [[ "$THEME" =~ ^[a-z0-9][a-z0-9-]*$ && -s "$CUSTOM_THEME/theme.conf" \
       && -s "$CUSTOM_THEME/waybar.css" && -s "$CUSTOM_THEME/wofi.css" \
@@ -297,7 +298,7 @@ if [[ -n "$CUSTOM_THEME" && -s "$CUSTOM_THEME/btop.theme" ]]; then
 else
   btop_theme_path="$DOTFILES/btop/themes/$THEME.theme"
   btop_background=false
-  [[ "$THEME" == dusk-city || "$THEME" == skull-teal || "$THEME" == arch-blue ]] && btop_background=true
+  [[ "$THEME" == dusk-city || "$THEME" == skull-teal || "$THEME" == arch-blue || "$THEME" == neon-void || "$THEME" == amber-shibuya ]] && btop_background=true
   [[ -f "$btop_theme_path" ]] || btop_theme_path=Default
 fi
 sed -i "s|^color_theme = .*|color_theme = \"$btop_theme_path\"|; s|^theme_background = .*|theme_background = $btop_background|" \
@@ -317,6 +318,8 @@ else
     arch-blue) border='rgba(31b7ffff) rgba(9f9ce8ff) 45deg' ;;
     skull-teal) border='rgba(70d3b5ff) rgba(e8b870ff) 45deg' ;;
     dusk-city) border='rgba(89dcebff) rgba(f38ba8ff) 45deg' ;;
+    neon-void) border='rgba(00e5ffff) rgba(d83cffff) 45deg' ;;
+    amber-shibuya) border='rgba(ff9f1cff) rgba(ff6b1aff) 45deg' ;;
   esac
 fi
 printf '%s\n' "$THEME" > "$HOME/.config/hypr/current-theme"

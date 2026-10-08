@@ -24,7 +24,7 @@ El instalador instala paquetes oficiales de Arch, respalda configuraciones exist
 
 Opciones:
 
-- `--theme liberty|johan-neon|arch-blue|skull-teal|dusk-city`: tema inicial (por defecto `liberty`).
+- `--theme liberty|johan-neon|arch-blue|skull-teal|dusk-city|neon-void|amber-shibuya`: tema inicial (por defecto `liberty`).
 - `--enable-sddm`: instala el tema SDDM incluido y habilita el servicio.
 - `--set-default-shell`: hace Zsh el shell de inicio de sesión.
 - `--vscode-theme`: activa y aplica en VS Code los colores del tema elegido; `Super+T` los sincroniza después.
@@ -42,7 +42,13 @@ Después de instalar, cierra sesión y elige **Hyprland** en SDDM. El tema guard
 | `skull-teal` | `skull.png` | Verde agua, oro |
 | `arch-blue` | `arch-blue.png` | Azul eléctrico, azul cielo |
 | `johan-neon` | `johan-neon.png` | Cian eléctrico, magenta |
+| `johan2` | `wallpaper.png` | Carbón, azul hielo, sepia |
 | `liberty` | `liberty.jpg` | Blanco y negro, grises |
+| `scarlet-lycoris` | `wallhaven-vp2qv3.png` | Rojo amapola, carmesí, negro |
+| `pomo-sunset` | `wallhaven-pomo69.jpg` | Azul noche, coral, lavanda |
+| `glitch-dream` | `background.png` | Cian, azul hielo, lavanda, rosa |
+| `neon-void` | `neon-void.png` | Cian eléctrico, violeta, magenta |
+| `amber-shibuya` | `amber-shibuya.png` | Ámbar, naranja, negro urbano |
 
 Pulsa **Super+T** para abrir el selector. El tema sincroniza wallpaper, Waybar, Wofi, Ghostty, Kitty, Fastfetch, Cava, btop, prompt Zsh, NvChad y bordes de Hyprland. VS Code se sincroniza si se activó con `--vscode-theme`; no requiere una extensión de Marketplace y conserva el tema/extensiones instalados, aplicando colores de interfaz y sintaxis en vivo.
 

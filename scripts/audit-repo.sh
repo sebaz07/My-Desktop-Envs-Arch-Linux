@@ -23,6 +23,8 @@ declare -A wallpaper=(
     [arch-blue]=arch-blue.png
     [skull-teal]=skull.png
     [dusk-city]=pixel-dusk-city.png
+    [neon-void]=neon-void.png
+    [amber-shibuya]=amber-shibuya.png
 )
 declare -A waybar=(
     [liberty]=liberty.css
@@ -30,6 +32,8 @@ declare -A waybar=(
     [arch-blue]=arch-blue.css
     [skull-teal]=skull-amber.css
     [dusk-city]=dusk-city.css
+    [neon-void]=neon-void.css
+    [amber-shibuya]=amber-shibuya.css
 )
 declare -A prompt=(
     [liberty]=liberty.p10k.zsh
@@ -37,8 +41,10 @@ declare -A prompt=(
     [arch-blue]=kushal-arch-blue.p10k.zsh
     [skull-teal]=skull-teal.p10k.zsh
     [dusk-city]=dusk-city.p10k.zsh
+    [neon-void]=neon-void.p10k.zsh
+    [amber-shibuya]=amber-shibuya.p10k.zsh
 )
-themes=(liberty johan-neon arch-blue skull-teal dusk-city)
+themes=(liberty johan-neon arch-blue skull-teal dusk-city neon-void amber-shibuya)
 
 for theme in "${themes[@]}"; do
     need_file "assets/wallpapers/${wallpaper[$theme]}"
@@ -184,7 +190,7 @@ if (( live )); then
         [[ -n "$wallpaper_source" ]] || fail "falta wallpaper para el tema activo $active_key"
     else
         case "$active_key" in
-            liberty|johan-neon|arch-blue|skull-teal|dusk-city) ;;
+            liberty|johan-neon|arch-blue|skull-teal|dusk-city|neon-void|amber-shibuya) ;;
             *) fail "tema activo desconocido: $active_theme"; active_key=liberty ;;
         esac
         waybar_id="$active_key"

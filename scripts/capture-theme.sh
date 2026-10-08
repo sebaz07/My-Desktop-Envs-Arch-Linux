@@ -26,7 +26,7 @@ if [[ "$theme_id" == -h || "$theme_id" == --help ]]; then usage; exit 0; fi
     exit 2
 }
 case "$theme_id" in
-    liberty|johan-neon|arch-blue|skull-teal|dusk-city)
+    liberty|johan-neon|arch-blue|skull-teal|dusk-city|neon-void|amber-shibuya)
         printf 'Ese ID pertenece a un tema integrado: %s\n' "$theme_id" >&2
         exit 2
         ;;

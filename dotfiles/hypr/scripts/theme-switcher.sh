@@ -41,6 +41,15 @@ set_wallpaper_all() {
     )
 }
 
+wallpaper_source() {
+    local filename="$1"
+    if [[ -f "$wallpapers/$filename" ]]; then
+        printf '%s\n' "$wallpapers/$filename"
+    else
+        printf '%s\n' "$repo_root/assets/wallpapers/$filename"
+    fi
+}
+
 set_btop_theme() {
     local theme_path="$1" show_theme_bg="$2" btop_config="$HOME/.config/btop/btop.conf"
     [[ -f "$btop_config" ]] || return 0
@@ -73,13 +82,12 @@ if [[ -z "$choice" ]]; then
         custom_id="${custom_dir##*/}"
         custom_name="$(sed -n 's/^name=//p' "$custom_dir/metadata" 2>/dev/null | head -n1)"
         custom_name="${custom_name:-$custom_id}"
-        custom_choices+="${custom_choices:+$'\n'}custom:$custom_id — $custom_name"
+        custom_choices+="${custom_choices:+$'\n'}$custom_id — $custom_name"
     done < <(find "$dotfiles/themes/custom" -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null | sort)
-    choice="$(printf 'Dusk City (animado)\nSkull (verde agua)\nArch Blue\nJohan Neon\nLiberty\n%s' "$custom_choices" | sed '/^$/d' | wofi --dmenu --prompt 'Tema')" || exit 0
+    choice="$(printf 'Dusk City (animado)\nSkull (verde agua)\nArch Blue\nJohan Neon\nNeon Void\nAmber Shibuya\nLiberty\n%s' "$custom_choices" | sed '/^$/d' | wofi --dmenu --prompt 'Tema')" || exit 0
 fi
 
-if [[ "$choice" == custom:* ]]; then
-    choice="${choice#custom:}"
+if [[ "$choice" == *' — '* ]]; then
     choice="${choice%% — *}"
 fi
 custom_theme="$dotfiles/themes/custom/$choice"
@@ -123,7 +131,7 @@ case "$choice" in
             mpvpaper -p -o 'no-audio loop-file=inf' ALL "$video" >/dev/null 2>&1 &
         else
             if ! pgrep -x hyprpaper >/dev/null; then hyprpaper >/dev/null 2>&1 & sleep 0.8; fi
-            set_wallpaper_all "$wallpapers/pixel-dusk-city.png"
+            set_wallpaper_all "$(wallpaper_source pixel-dusk-city.png)"
         fi
         ln -sfn "$waybar_themes/dusk-city.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/dusk-city.css" "$config_dir/wofi/style.css"
@@ -141,7 +149,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        set_wallpaper_all "$wallpapers/skull.png"
+        set_wallpaper_all "$(wallpaper_source skull.png)"
         ln -sfn "$waybar_themes/skull-amber.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/skull-teal.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/skull-teal" "$config_dir/ghostty/current-theme"
@@ -158,7 +166,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        set_wallpaper_all "$wallpapers/arch-blue.png"
+        set_wallpaper_all "$(wallpaper_source arch-blue.png)"
         ln -sfn "$waybar_themes/arch-blue.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/arch-blue.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/arch-blue" "$config_dir/ghostty/current-theme"
@@ -175,7 +183,7 @@ case "$choice" in
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        set_wallpaper_all "$wallpapers/johan-neon.png"
+        set_wallpaper_all "$(wallpaper_source johan-neon.png)"
         ln -sfn "$waybar_themes/johan-neon.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/johan-neon.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/johan-neon" "$config_dir/ghostty/current-theme"
@@ -186,13 +194,47 @@ case "$choice" in
         set_btop_theme "$btop_themes/johan-neon.theme" false
         border_colors='rgba(00d9ffff) rgba(f02bd4ff) 45deg'
         ;;
+    'Neon Void'|neon-void)
+        pkill -x mpvpaper 2>/dev/null || true
+        if ! pgrep -x hyprpaper >/dev/null; then
+            hyprpaper >/dev/null 2>&1 &
+            sleep 0.8
+        fi
+        set_wallpaper_all "$(wallpaper_source neon-void.png)"
+        ln -sfn "$waybar_themes/neon-void.css" "$config_dir/waybar/style.css"
+        ln -sfn "$wofi_themes/neon-void.css" "$config_dir/wofi/style.css"
+        ln -sfn "$dotfiles/ghostty/themes/neon-void" "$config_dir/ghostty/current-theme"
+        ln -sfn "$zsh_themes/neon-void.p10k.zsh" "$HOME/.p10k.zsh"
+        ln -sfn "$fastfetch_themes/neon-void.jsonc" "$config_dir/fastfetch/config.jsonc"
+        ln -sfn "$cava_themes/neon-void.conf" "$config_dir/cava/config"
+        ln -sfn "$kitty_themes/neon-void.conf" "$config_dir/kitty/current-theme.conf"
+        set_btop_theme "$btop_themes/neon-void.theme" true
+        border_colors='rgba(00e5ffff) rgba(d83cffff) 45deg'
+        ;;
+    'Amber Shibuya'|amber-shibuya)
+        pkill -x mpvpaper 2>/dev/null || true
+        if ! pgrep -x hyprpaper >/dev/null; then
+            hyprpaper >/dev/null 2>&1 &
+            sleep 0.8
+        fi
+        set_wallpaper_all "$(wallpaper_source amber-shibuya.png)"
+        ln -sfn "$waybar_themes/amber-shibuya.css" "$config_dir/waybar/style.css"
+        ln -sfn "$wofi_themes/amber-shibuya.css" "$config_dir/wofi/style.css"
+        ln -sfn "$dotfiles/ghostty/themes/amber-shibuya" "$config_dir/ghostty/current-theme"
+        ln -sfn "$zsh_themes/amber-shibuya.p10k.zsh" "$HOME/.p10k.zsh"
+        ln -sfn "$fastfetch_themes/amber-shibuya.jsonc" "$config_dir/fastfetch/config.jsonc"
+        ln -sfn "$cava_themes/amber-shibuya.conf" "$config_dir/cava/config"
+        ln -sfn "$kitty_themes/amber-shibuya.conf" "$config_dir/kitty/current-theme.conf"
+        set_btop_theme "$btop_themes/amber-shibuya.theme" true
+        border_colors='rgba(ff9f1cff) rgba(ff6b1aff) 45deg'
+        ;;
     Liberty|liberty|Liberty-Monochrome)
         pkill -x mpvpaper 2>/dev/null || true
         if ! pgrep -x hyprpaper >/dev/null; then
             hyprpaper >/dev/null 2>&1 &
             sleep 0.8
         fi
-        set_wallpaper_all "$wallpapers/liberty.jpg"
+        set_wallpaper_all "$(wallpaper_source liberty.jpg)"
         ln -sfn "$waybar_themes/liberty.css" "$config_dir/waybar/style.css"
         ln -sfn "$wofi_themes/liberty.css" "$config_dir/wofi/style.css"
         ln -sfn "$dotfiles/ghostty/themes/liberty" "$config_dir/ghostty/current-theme"
@@ -231,6 +273,8 @@ if [[ -e "$config_dir/hypr/vscode-theme-enabled" ]] && command -v python3 >/dev/
         Skull|skull|'Skull (dorado)'|'Skull (verde agua)'|amber) vscode_theme=skull-teal ;;
         'Arch Blue') vscode_theme=arch-blue ;;
         'Johan Neon'|johan) vscode_theme=johan-neon ;;
+        'Neon Void') vscode_theme=neon-void ;;
+        'Amber Shibuya') vscode_theme=amber-shibuya ;;
         Liberty|Liberty-Monochrome) vscode_theme=liberty ;;
     esac
     if ! python3 "$repo_root/scripts/set-vscode-theme.py" "$vscode_theme"; then

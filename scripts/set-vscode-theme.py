@@ -14,7 +14,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-BUILTIN = {"liberty", "johan-neon", "arch-blue", "skull-teal", "dusk-city"}
+BUILTIN = {"liberty", "johan-neon", "arch-blue", "skull-teal", "dusk-city", "neon-void", "amber-shibuya"}
 REQUIRED_COLORS = {
     "background", "foreground", "surface", "primary", "secondary", "muted",
     "string", "type", "visual", "red", "green", "yellow", "blue", "magenta", "cyan",

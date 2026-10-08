@@ -26,7 +26,7 @@ ln -sfn "$HOME/My-Desktop-Envs-Arch-Linux/dotfiles/ghostty/themes/$theme" \
   "$HOME/.config/ghostty/current-theme"
 ```
 
-IDs válidos: `liberty`, `johan-neon`, `arch-blue`, `skull-teal`, `dusk-city`. Ghostty puede recargar con `Ctrl+Shift+,`; si se cambió el shell de inicio, abre una terminal nueva.
+IDs válidos: `liberty`, `johan-neon`, `arch-blue`, `skull-teal`, `dusk-city`, `neon-void`, `amber-shibuya`. Ghostty puede recargar con `Ctrl+Shift+,`; si se cambió el shell de inicio, abre una terminal nueva.
 
 ## `Super+T` cambia el escritorio, pero rompe Ghostty o el prompt Zsh
 

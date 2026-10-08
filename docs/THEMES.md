@@ -2,6 +2,8 @@
 
 El selector vive en `dotfiles/hypr/scripts/theme-switcher.sh`. Cada tema usa un ID en minúsculas; ese ID se guarda en `~/.config/hypr/current-theme` y se aplica también al iniciar Hyprland.
 
+Los perfiles personalizados `scarlet-lycoris`, `pomo-sunset`, `glitch-dream` y `johan2` están en `dotfiles/themes/custom/`. El selector los descubre automáticamente usando el nombre de `metadata`, y el instalador acepta sus IDs directamente, por ejemplo `./install.sh --theme johan2`.
+
 VS Code puede seguir la misma paleta sin instalar una extensión de tema. Actívalo al instalar con `./install.sh --theme liberty --vscode-theme`; el script crea `~/.config/hypr/vscode-theme-enabled` y aplica colores de interfaz, editor, terminal y sintaxis mediante `workbench.colorCustomizations` y `editor.tokenColorCustomizations`. Se preservan otras opciones del usuario, se crea una copia inicial de `settings.json` y VS Code actualiza los colores en vivo. Sin `--vscode-theme`, el instalador y `Super+T` no escriben en VS Code. Esta opción requiere VS Code/Code OSS/VSCodium y Python 3; con `--no-packages`, deben estar instalados previamente.
 
 ## Archivos por tema

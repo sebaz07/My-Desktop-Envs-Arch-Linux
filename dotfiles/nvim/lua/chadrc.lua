@@ -24,6 +24,8 @@ local palettes = {
 	["arch-blue"] = { bg = "#080e1b", fg = "#d8eaff", muted = "#7188a8", surface = "#14233a", primary = "#31b7ff", secondary = "#9f9ce8", string = "#7de0cb", type = "#54d8ff", visual = "#183654" },
 	["skull-teal"] = { bg = "#0a1517", fg = "#e2efeb", muted = "#809b92", surface = "#17312e", primary = "#70d3b5", secondary = "#e8b870", string = "#a9d79c", type = "#70d3b5", visual = "#27473d" },
 	["dusk-city"] = { bg = "#10121c", fg = "#e8efff", muted = "#818ba9", surface = "#252b40", primary = "#89dceb", secondary = "#f38ba8", string = "#a6e3a1", type = "#89b4fa", visual = "#3b3458" },
+	["neon-void"] = { bg = "#090713", fg = "#d9f7ff", muted = "#77749a", surface = "#1b1630", primary = "#00e5ff", secondary = "#d83cff", string = "#45d9d0", type = "#58c5ff", visual = "#34205b" },
+	["amber-shibuya"] = { bg = "#151312", fg = "#f2e3cf", muted = "#8a7668", surface = "#2b211b", primary = "#ff9f1c", secondary = "#ff6b1a", string = "#d9a441", type = "#ffad33", visual = "#5a3524" },
 }
 
 local active_key = active_theme:lower():gsub("%s*%b()", ""):gsub("%s+", "-")

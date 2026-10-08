@@ -33,10 +33,10 @@
     "format-icons": ["󰃞", "󰃟", "󰃠"]
   },
   "mpris": {
-    "format": "󰐊  {title}",
-    "format-paused": "󰏤  {title}",
+    "format": "󰐊  {artist} — {title}",
+    "format-paused": "󰏤  {artist} — {title}",
     "format-stopped": "",
-    "max-length": 28,
+    "max-length": 42,
     "tooltip-format": "{player}: {artist} — {title}",
     "on-click": "playerctl play-pause",
     "on-click-right": "playerctl next"
